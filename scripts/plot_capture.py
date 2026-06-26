@@ -214,7 +214,7 @@ if __name__ == "__main__":
     dataset_path  = sys.argv[1] if len(sys.argv) > 1 else DEFAULT_DATASET
     capture_index = int(sys.argv[2]) if len(sys.argv) > 2 else 0
     output_path   = sys.argv[3] if len(sys.argv) > 3 else \
-        os.path.join(os.path.expanduser("~/Desktop"), f"pdsch_capture_{capture_index:04d}.png")
+        os.path.join(os.path.dirname(os.path.abspath(dataset_path)), f"pdsch_capture_{capture_index:04d}.png")
 
     dataset = PDSCHDataset(dataset_path)
     print(dataset)

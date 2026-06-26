@@ -152,7 +152,7 @@ static int open_output(void)
              "%s/%s/%s", basedir, ts, filename);
 
     char cmd[700];
-    snprintf(cmd, sizeof(cmd), "mkdir -p %s/%s", basedir, ts);
+    snprintf(cmd, sizeof(cmd), "mkdir -p '%s/%s' && chmod 777 '%s/%s'", basedir, ts, basedir, ts);
     (void)system(cmd);
 
     g_out = fopen(g_actual_output_file, "ab");
