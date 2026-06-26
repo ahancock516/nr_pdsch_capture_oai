@@ -95,8 +95,13 @@ static void load_config(void)
     FILE *fp = fopen(CONFIG_FILE, "r");
     if (!fp)
         return;
-    char key[64], val[512];
-    while (fscanf(fp, "%63s %511s", key, val) == 2) {
+    char line[640];
+    while (fgets(line, sizeof(line), fp)) {
+        char key[64], val[512];
+        if (line[0] == '#' || line[0] == '\n' || line[0] == '\r')
+            continue;
+        if (sscanf(line, "%63s %511s", key, val) != 2)
+            continue;
         if (strcmp(key, "output_file") == 0)
             strncpy(g_cfg.output_file, val, sizeof(g_cfg.output_file) - 1);
         else if (strcmp(key, "max_captures") == 0)
