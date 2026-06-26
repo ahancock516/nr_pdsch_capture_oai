@@ -24,6 +24,7 @@
 #include <pthread.h>
 #include <unistd.h>
 #include <errno.h>
+#include <time.h>
 
 #include "openair1/PHY/defs_nr_UE.h"
 #include "openair1/PHY/NR_UE_TRANSPORT/nr_transport_ue.h"
@@ -125,25 +126,43 @@ static uint32_t        g_dup_skip_count   = 0;
 static uint32_t        g_dmrs_skip_count  = 0;
 static uint32_t        g_comb_skip_count  = 0;
 
+static char g_actual_output_file[640];
+
 static int open_output(void)
 {
+    /* Split configured path into directory and filename. */
     char tmp[512];
     strncpy(tmp, g_cfg.output_file, sizeof(tmp) - 1);
     char *slash = strrchr(tmp, '/');
+    const char *filename = slash ? slash + 1 : tmp;
+    char basedir[512] = ".";
     if (slash) {
         *slash = '\0';
-        char cmd[560];
-        snprintf(cmd, sizeof(cmd), "mkdir -p %s", tmp);
-        (void)system(cmd);
+        strncpy(basedir, tmp, sizeof(basedir) - 1);
     }
-    g_out = fopen(g_cfg.output_file, "ab");
+
+    /* Build a timestamped subdirectory: YYYYMMDD_HHMMSS */
+    time_t now = time(NULL);
+    struct tm *t = localtime(&now);
+    char ts[32];
+    strftime(ts, sizeof(ts), "%Y%m%d_%H%M%S", t);
+
+    /* Final path: <basedir>/<timestamp>/<filename> */
+    snprintf(g_actual_output_file, sizeof(g_actual_output_file),
+             "%s/%s/%s", basedir, ts, filename);
+
+    char cmd[700];
+    snprintf(cmd, sizeof(cmd), "mkdir -p %s/%s", basedir, ts);
+    (void)system(cmd);
+
+    g_out = fopen(g_actual_output_file, "ab");
     if (!g_out) {
         fprintf(stderr, "[PDSCH_CAPTURE] cannot open %s: %s\n",
-                g_cfg.output_file, strerror(errno));
+                g_actual_output_file, strerror(errno));
         return -1;
     }
     fprintf(stderr, "[PDSCH_CAPTURE] writing dataset to %s (max %u captures)\n",
-            g_cfg.output_file, g_cfg.max_captures);
+            g_actual_output_file, g_cfg.max_captures);
     return 0;
 }
 
