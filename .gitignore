@@ -1,0 +1,5 @@
+data/*.bin
+data/*.png
+data/*.mp4
+__pycache__/
+*.pyc
