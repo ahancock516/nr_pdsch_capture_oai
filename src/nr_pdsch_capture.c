@@ -68,9 +68,12 @@ typedef struct {
  * Configuration
  * ---------------------------------------------------------------------- */
 
-#define DEFAULT_OUTPUT_FILE   "plugins/nr_pdsch_capture/data/pdsch_dataset.bin"
+#ifndef PDSCH_CAPTURE_REPO_DIR
+#define PDSCH_CAPTURE_REPO_DIR "."
+#endif
+#define DEFAULT_OUTPUT_FILE   PDSCH_CAPTURE_REPO_DIR "/data/pdsch_dataset.bin"
 #define DEFAULT_MAX_CAPTURES  5000
-#define CONFIG_FILE           "plugins/nr_pdsch_capture/capture_config.txt"
+#define CONFIG_FILE           PDSCH_CAPTURE_REPO_DIR "/capture_config.txt"
 
 #define DMRS_COMB_POWER_RATIO_THRESHOLD 1.50
 

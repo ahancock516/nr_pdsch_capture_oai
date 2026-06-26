@@ -1,5 +1,7 @@
 # nr_pdsch_capture configuration
 # Keys are whitespace-separated from values.
+# output_file defaults to <repo>/data/pdsch_dataset.bin (set at build time).
+# Uncomment to override:
+# output_file   /custom/path/pdsch_dataset.bin
 
-output_file   plugins/nr_pdsch_capture/data/pdsch_dataset.bin
 max_captures  5000

@@ -48,6 +48,7 @@ target_include_directories(pdsch_capture PRIVATE
 target_compile_definitions(pdsch_capture PRIVATE
     ${T_TRACER_DEF}
     MAX_NUM_CCs=1
+    PDSCH_CAPTURE_REPO_DIR="${CMAKE_CURRENT_SOURCE_DIR}"
 )
 
 target_link_libraries(pdsch_capture PRIVATE pthread)
