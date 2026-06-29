@@ -319,17 +319,11 @@ static int build_dmrs_bins(uint8_t  dmrs_config_type,
             quiet_count++;
         }
     }
-    if (quiet_count > 0)
-        return 1;  /* power ratio check meaningful */
-
-    /* Priority 2: non-reserved data bins — power ratio check not applicable */
-    for (int b = 0; b < 12; b++) {
-        if (!reserved_bins[b]) {
-            quiet_bins[b] = 1;
-            quiet_count++;
-        }
-    }
-    return (quiet_count > 0) ? 2 : 0;
+    /* Strict mode (matches nr_pusch_capture build_dmrs_quiet_bins): require an
+     * inter-CDM-group quiet comb so the power-ratio test is meaningful. Reject
+     * 1-CDM-group captures rather than falling back to data bins. Per Jose's
+     * architecture, captures should only represent a verifiable DMRS comb. */
+    return (quiet_count > 0) ? 1 : 0;
 }
 
 /* Returns 1 if the DMRS comb power ratio meets the threshold. */
